@@ -1,0 +1,72 @@
+version: "3"
+
+services:
+    flasker:
+        container_name: flasker-api
+        build: .
+        volumes:
+            - ./logs:/flasker/logs     # Store logs on local drive
+        networks:
+            - backend
+        # Use ports when connecting directly to flask without nginx
+        ports:
+            - "127.0.0.1:5003:5003"
+        environment:
+            - "FLASK_ENV=development"
+            - "APP_SETTINGS=config.DevelopmentDockerConfig"
+            #- "REDIS_URL=redis://redis:6379/0"    # Connect to redis
+            #- "OAUTHLIB_RELAX_TOKEN_SCOPE=1"    # Allow Google API to work
+            #- "OAUTHLIB_INSECURE_TRANSPORT=1"   # DEV ONLY!! Disable OAUTH
+        depends_on:
+            - postgres
+            #- redis
+
+    #flasker-worker:
+    #    container_name: flasker-api-worker
+    #    build: .
+    #    command: rq worker --url redis://redis:6379 flasker-tasks
+    #    volumes:
+    #        - ./logs:/flasker/logs
+    #    networks:
+    #        - backend
+    #    environment:
+    #        - "FLASK_ENV=development"
+    #        - "APP_SETTINGS=app.config.DevelopmentConfig"
+    #        #- "DATABASE_URL=postgresql://flasker:wrong-horse-battery-staple@postgres:5433/flasker"
+    #        - "REDIS_URL=redis://redis:6379/0"    # Connect to redis
+    #        #- "OAUTHLIB_RELAX_TOKEN_SCOPE=1"    # Allow Google API to work
+    #        #- "OAUTHLIB_INSECURE_TRANSPORT=1"   # DEV ONLY!! Disable OAUTH
+    #    depends_on:
+    #        - postgres
+    #        - redis
+
+    #redis:
+    #    container_name: flasker-redis
+    #    image: redis
+    #    restart: always
+    #    networks:
+    #        - backend
+
+    postgres:
+        container_name: flasker-postgres
+        image: postgres:10-alpine
+        volumes:
+            - flasker_postgres_data:/var/lib/postgresql    # Store data here
+        networks:
+            - backend
+        #ports:
+        #    - "127.0.0.1:5433:5432"
+        expose:
+            - "5432"
+        environment:
+            - "POSTGRES_USER=flasker"
+            - "POSTGRES_PASSWORD=wrong-horse-battery-staple"
+            - "POSTGRES_DATABASE=flasker"
+
+
+volumes:
+    flasker_postgres_data:
+
+
+networks:
+    backend:

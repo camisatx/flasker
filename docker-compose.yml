@@ -1,0 +1,77 @@
+version: "3"
+
+services:
+    flasker:
+        container_name: flasker-api
+        build: .
+        volumes:
+            - ./logs:/flasker/logs     # Store logs on local drive
+        networks:
+            - backend
+            - webproxy
+        # Use expose when using lets-encrypt/nginx webproxy container
+        expose:
+            - "5003"
+        restart: always
+        environment:
+            - "FLASK_ENV=production"
+            - "APP_SETTINGS=config.ProductionConfig"
+            - "VIRTUAL_HOST=api.flasker.com,www.api.flasker.com"
+            - "LETSENCRYPT_HOST=api.clasker.com,www.api.flasker.com"
+            - "LETSENCRYPT_EMAIL=admin@flasker.com"
+            #- "OAUTHLIB_RELAX_TOKEN_SCOPE=1"    # Allow Google API to work
+            #- "REDIS_URL=redis://redis:6379/0"    # Connect to redis
+        depends_on:
+            - postgres
+            #- redis
+
+    #flasker-worker:
+    #    container_name: flasker-api-worker
+    #    build: .
+    #    command: rq worker --url redis://redis:6379 flasker-tasks
+    #    volumes:
+    #        - ./logs:/flasker/logs
+    #    networks:
+    #        - backend
+    #    restart: always
+    #    environment:
+    #        - "FLASK_ENV=production"
+    #        - "APP_SETTINGS=config.ProductionConfig"
+    #        #- "OAUTHLIB_RELAX_TOKEN_SCOPE=1"    # Allow Google API to work
+    #        - "REDIS_URL=redis://redis:6379/0"    # Connect to redis
+    #    depends_on:
+    #        - postgres
+    #        - redis
+
+    #redis:
+    #    container_name: flasker-redis
+    #    image: redis
+    #    restart: always
+    #    networks:
+    #        - backend
+
+    postgres:
+        container_name: flasker-postgres
+        image: postgres:10-alpine
+        volumes:
+            - flasker_postgres_data:/var/lib/postgresql    # Store data here
+        networks:
+            - backend
+        restart: always
+        expose:
+            - "5432"
+        environment:
+            - "POSTGRES_USER=flasker"
+            - "POSTGRES_PASSWORD=correct-horse-battery-staple"
+            - "POSTGRES_DATABASE=flasker"
+
+
+volumes:
+    flasker_postgres_data:
+
+
+networks:
+    backend:
+    webproxy:
+        external:
+            name: webproxy
