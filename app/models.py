@@ -69,7 +69,6 @@ class User(UserMixin, IdMixin, TimestampMixin, PaginatedApiMixin, db.Model):
     # Name: Strip
     name = db.Column(db.String(100), nullable=True)
     about_me = db.Column(db.String(200), nullable=True)
-    points = db.Column(db.Integer, nullable=True)
     privacy = db.Column(db.Boolean, default=False, nullable=True)
     token = db.Column(db.String(128), index=True, unique=True, nullable=True)
     token_expiration = db.Column(db.DateTime, nullable=True)
@@ -82,7 +81,7 @@ class User(UserMixin, IdMixin, TimestampMixin, PaginatedApiMixin, db.Model):
             lazy='dynamic', cascade='all,delete')
     tasks = db.relationship('Task', backref='user', lazy='dynamic',
             cascade='all,delete')
-    # Add relationships to other user related tables here
+    # TODO: Add relationships to other user related tables here
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
