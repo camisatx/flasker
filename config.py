@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class BaseConfig:
     SITE_NAME = 'Flasker'   # Change this to your site's name
     APP_NICKNAME = 'flasker'    # Single word name for app tasks/containers
-    ADMINS = ['flasker@joshschertz.com']    # Change this to your email
+    ADMINS = ['josh@joshschertz.com']    # Change this to your email
     REGISTRATION = True     # allow users to register themselves
     IGNORE_EMAIL_CONFIRMATION = False
     TESTING = False

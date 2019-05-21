@@ -179,7 +179,6 @@ class User(UserMixin, IdMixin, TimestampMixin, PaginatedApiMixin, db.Model):
             'group': self.group,
             'name': self.name,
             'about_me': self.about_me,
-            'points': self.points,
             'follower_count': self.followers.count(),
             'followed_count': self.followed.count(),
             '_links': {
@@ -198,15 +197,16 @@ class User(UserMixin, IdMixin, TimestampMixin, PaginatedApiMixin, db.Model):
         """Convert a data object into a user object"""
         for field in ['username', 'email', 'group', 'name', 'about_me',
                 'privacy', 'points']:
-            if field in ['username', 'email']:
-                # Make username and email case insensitive
-                data[field] = data[field].lower().strip()
-            elif field == 'name':
-                data[field] = data[field.strip()]
             if field in data:
+                if field in ['username', 'email']:
+                    # Make username and email case insensitive
+                    data[field] = data[field].lower().strip()
+                elif field == 'name':
+                    data[field] = data[field.strip()]
                 setattr(self, field, data[field])
-        if new_user and 'password' in data:
+        if 'password' in data:
             self.set_password(data['password'])
+        if new_user:
             public_id = base64.b64encode(os.urandom(18)).decode('utf-8')
             self.public_id = public_id.replace('/', 'J')    # replace /
 
