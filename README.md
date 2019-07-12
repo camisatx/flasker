@@ -1,6 +1,6 @@
 # Flasker
 
-🚨🚨**Developmental software - use with caution!**🚨🚨
+🚨🚨 **Developmental software - use with caution!** 🚨🚨
 
 A starting template for a Flask API backend. Components include user account functionality and a simple data retrieval example. Database connectivity is handled through SqlAlchemy, enabling the use of Postgres, MySQL, and Sqlite3.
 
