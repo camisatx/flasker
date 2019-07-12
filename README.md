@@ -1,5 +1,7 @@
 # Flasker
 
+**ALPHA** - Use with caution!
+
 A starting template for a Flask API backend. Components include user account functionality and a simple data retrieval example. Database connectivity is handled through SqlAlchemy, enabling the use of Postgres, MySQL, and Sqlite3.
 
 ## How to Use
@@ -55,11 +57,10 @@ If using the optional RQ task server, start the Redis container with `docker run
 
 Start an RQ worker with `rq worker flasker-tasks`
 
+## Copyright
+
+Copyright (c) 2019 Joshua Schertz
 
 ## License
 
-TBD
-
-## Copyright
-
-(c) Copyright 2019 Joshua Schertz
+Flasker is open source software [licensed as MIT](https://github.com/camisatx/flasker/blob/master/LICENSE).
