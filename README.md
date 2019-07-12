@@ -1,6 +1,6 @@
 # Flasker
 
-**ALPHA** - Use with caution!
+🚨🚨**Developmental software - use with caution!**🚨🚨
 
 A starting template for a Flask API backend. Components include user account functionality and a simple data retrieval example. Database connectivity is handled through SqlAlchemy, enabling the use of Postgres, MySQL, and Sqlite3.
 
@@ -63,4 +63,4 @@ Copyright (c) 2019 Joshua Schertz
 
 ## License
 
-Flasker is open source software [licensed as MIT](https://github.com/camisatx/flasker/blob/master/LICENSE).
+Flasker is open source software [licensed as MIT](https://github.com/camisatx/flasker/blob/master/LICENSE.md).
