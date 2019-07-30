@@ -5,6 +5,16 @@ from app.api.v1 import bp
 from app.api.v1.auth import basic_auth, token_auth
 
 
+@bp.route('/tokens', methods=['GET'])
+@token_auth.login_required
+def check_token():
+    """Check if the user's token is still active. If they are able to login
+    with it, then the token is active. If it is not active, they will
+    receive a 401 status code.
+    """
+    return '', 200
+
+
 @bp.route('/tokens', methods=['POST'])
 @basic_auth.login_required
 def get_token():
@@ -17,6 +27,7 @@ def get_token():
     return jsonify({
         'public_id': g.current_user.public_id,
         'username': g.current_user.username,
+        'group': g.current_user.group,
         'token': token
     })
 
