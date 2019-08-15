@@ -120,9 +120,11 @@ def create_user():
 def update_user(public_id):
     """Edit an existing user. Each data field is optional, so check if the
     field is provided before cleaning and verifying the value."""
-    # Restrict user edits to the current user
-    if g.current_user.public_id != public_id or \
-            g.current_user.username == 'guest':
+    # Restrict user edits to the current user or admins
+    if g.current_user.public_id == public_id or g.current_user.group == 'admin' \
+            or g.current_user.username != 'guest':
+        pass
+    else:
         abort(403)
     user = User.query.filter_by(public_id=public_id).first()
     data = request.get_json() or {}
@@ -144,3 +146,15 @@ def update_user(public_id):
     user.from_dict(data, new_user=False)    # Import and update user data
     db.session.commit()
     return jsonify(user.to_dict(include_email=True))
+
+
+@bp.route('/users/<public_id>', methods=['DELETE'])
+@token_auth.login_required
+def delete_user(public_id):
+    """Delete an existing user. DO NOT delete oneself."""
+    if g.current_user.group != 'admin' or g.current_user.public_id == public_id:
+        abort(403)
+    user = User.query.filter_by(public_id=public_id).first_or_404()
+    db.session.delete(user)
+    db.session.commit()
+    return '', 204
