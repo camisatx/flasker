@@ -49,6 +49,36 @@ class PaginatedApiMixin():
         }
         return data
 
+    @staticmethod
+    def content_to_collection_dict(query, page, per_page, endpoint, **kwargs):
+        """Produces a dictionary representing a collection, including the
+        items, _meta, and _links. Useful for returning collection of user
+        followers."""
+        resources = query.paginate(page, per_page, False)
+        data = {
+            '_meta': {
+                'page': page,
+                'per_page': per_page,
+                'total_pages': resources.pages,
+                'total_items': resources.total,
+            },
+            '_links': {
+                'self': url_for(endpoint, page=page, per_page=per_page,
+                        **kwargs),
+                'next': url_for(endpoint, page=page + 1, per_page=per_page,
+                        **kwargs) if resources.has_next else None,
+                'prev': url_for(endpoint, page=page - 1, per_page=per_page,
+                        **kwargs) if resources.has_prev else None
+            },
+        }
+        content = kwargs.get('content')
+        tags = kwargs.get('tags')
+        history = kwargs.get('history')
+        track = kwargs.get('track')
+        data['items'] = [item.to_dict(content=content, tags=tags,
+            history=history, track=track) for item in resources.items]
+        return data
+
 
 followers = db.Table(
         'followers',
@@ -82,6 +112,8 @@ class User(UserMixin, IdMixin, TimestampMixin, PaginatedApiMixin, db.Model):
     tasks = db.relationship('Task', backref='user', lazy='dynamic',
             cascade='all,delete')
     # TODO: Add relationships to other user related tables here
+    contents = db.relationship('Content', backref='user',
+            lazy='dynamic', cascade='all,delete')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -272,3 +304,36 @@ class Task(TimestampMixin, db.Model):
         already finished and data expired)."""
         job = self.get_rq_job()
         return job.meta.get('progress', 0) if job is not None else 100
+
+
+class Content(IdMixin, TimestampMixin, PaginatedApiMixin,  db.Model):
+    public_id = db.Column(db.String(24), index=True, unique=True, nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    text = db.Column(db.Text(), nullable=True)
+    comments = db.Column(db.Boolean, default=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def from_dict(self, data, new=True):
+        for field in ['title', 'text', 'comments', 'user_id']:
+            if field in data:
+                setattr(self, field, data[field])
+        if new:
+            public_id = base64.b64encode(os.urandom(18)).decode('utf-8')
+            self.public_id = public_id.replace('/', 'J').replace('+', 'k')
+
+    def to_dict(self, text=False):
+        """Convert the content object into a JSON object"""
+        data = {
+            'public_id': self.public_id,
+            'title': self.title,
+            'username': self.user.username,
+            'created': self.created,
+            'updated': self.updated,
+            '_links': {
+                'self': url_for('api.v1.get_content', public_id=self.public_id),
+                'content': url_for('api.v1.get_all_content')
+            }
+        }
+        if text:
+            data['text'] = self.text if self.text else ''
+        return data
