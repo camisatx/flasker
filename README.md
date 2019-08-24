@@ -10,7 +10,11 @@ A starting template for a Flask API backend. Components include user account fun
 
 If you are using Flasker within another project, make a bare clone of this repository into a new folder called `api`. Starting at the root folder of your project, run:
 
-`git clone --bare https://github.com/camisatx/flasker.git api`
+`git clone https://github.com/camisatx/flasker.git api`
+
+Since you will be modifying the Flasker files for your own project, it is best to disconnect it from the remote repository. Do this by removing the `.git` folder with:
+
+`rm -rf .git/`
 
 ### Initialize Database
 
