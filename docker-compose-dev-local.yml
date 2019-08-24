@@ -19,7 +19,7 @@ services:
 
     postgres:
         container_name: flasker-postgres
-        image: postgres:10-alpine
+        image: postgres:11-alpine
         volumes:
             - flasker_postgres_data:/var/lib/postgresql    # Store data here
         networks:
