@@ -6,6 +6,12 @@ A starting template for a Flask API backend. Components include user account fun
 
 ## How to Use
 
+### Clone Into Project
+
+If you are using Flasker within another project, make a bare clone of this repository into a new folder called `api`. Starting at the root folder of your project, run:
+
+`git clone --bare git@github.com:camisatx/flasker.git api`
+
 ### Initialize Database
 
 Make sure Postgres engine is running. You can use the Docker Postgres engine by running `docker-compose -f docker-compose-dev-locally.yml up postgres`, which will create the database and setup the correct user accounts based on the database settings specified in `docker-compose-dev-locally.yml`.
