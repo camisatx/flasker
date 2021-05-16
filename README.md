@@ -69,7 +69,7 @@ Start an RQ worker with `rq worker flasker-tasks`
 
 ## Copyright
 
-Copyright (c) 2019 Joshua Schertz
+Copyright (c) 2021 Joshua Schertz
 
 ## License
 
