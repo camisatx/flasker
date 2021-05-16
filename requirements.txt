@@ -1,5 +1,5 @@
 Flask==1.0.3
-flask-cors==3.0.8
+flask-cors==3.0.9
 Flask-Dance[sqla]==2.2.0
 flask-httpauth==3.3.0
 flask-login==0.4.1
