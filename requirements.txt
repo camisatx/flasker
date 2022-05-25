@@ -10,7 +10,7 @@ flask-sqlalchemy==2.5.1
 flask-wtf==0.14.3
 passlib[argon2]==1.7.4
 psycopg2-binary==2.8.6
-pyjwt==2.1.0
+pyjwt==2.4.0
 pytz==2021.1
 requests==2.25.1
 rq==1.8.0
